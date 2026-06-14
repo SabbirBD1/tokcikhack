@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3X SMSHAFIN • AI PREDICTOR</title>
+  <style>
+    :root {
+      --primary: #bc13fe;
+      --secondary: #ff8c00;
+      --bg: rgba(7, 7, 10, 0.99);
+      --glass-border: rgba(188, 19, 254, 0.5);
+    }
+    * {
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+    }
+    #main-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    /* FLOATING BOT CARD */
+    #rakib-bot {
+      position: absolute;
+      top: 80px;
+      left: 15px;
+      width: 245px;
+      background: var(--bg);
+      border: 1.5px solid var(--primary);
+      border-radius: 20px;
+      box-shadow: 0 0 28px rgba(188, 19, 254, 0.7), 0 8px 20px rgba(0,0,0,0.5);
+      z-index: 9999;
+      touch-action: none;
+      backdrop-filter: blur(14px);
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), opacity 0.2s ease;
+      transform: scale(1);
+      opacity: 1;
+    }
+    #mini-icon {
+      position: absolute;
+      top: 80px;
+      left: 15px;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at 30% 30%, var(--primary), #2b0040);
+      border-radius: 50%;
+      display: none;
+      z-index: 10000;
+      cursor: pointer;
+      box-shadow: 0 0 20px #bc13fe, 0 2px 10px rgba(0,0,0,0.3);
+      border: 2px solid #fff;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 22px;
+      font-family: monospace;
+      letter-spacing: 1px;
+      backdrop-filter: blur(4px);
+    }
+    .header {
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(95deg, var(--primary), #9d2cf5);
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.5px;
+    }
+    .min-btn {
+      width: 22px;
+      height: 22px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      transition: 0.2s;
+      box-shadow: 0 1px 3px black;
+    }
+    .min-btn:active { transform: scale(0.92); background: #fff; }
+    #news-bar {
+      background: rgba(0,0,0,0.7);
+      color: #0aff6e;
+      font-size: 8.5px;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(188, 19, 254, 0.3);
+      text-align: center;
+      font-weight: bold;
+      text-shadow: 0 0 2px #0aff6e;
+    }
+    .container {
+      padding: 12px 12px 16px;
+      text-align: center;
+    }
+    .input-box {
+      width: 90%;
+      padding: 10px;
+      background: rgba(20, 20, 35, 0.8);
+      border: 1px solid #555;
+      border-radius: 40px;
+      color: #fff;
+      font-size: 12px;
+      margin-bottom: 12px;
+      outline: none;
+      text-align: center;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .input-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+    }
+    .btn-3d {
+      background: linear-gradient(125deg, var(--primary), #7a1fcf);
+      color: white;
+      border: none;
+      padding: 9px;
+      cursor: pointer;
+      width: 100%;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      transition: 0.1s linear;
+      box-shadow: 0 3px 0 #42006b;
+    }
+    .btn-3d:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #42006b;
+    }
+    #accuracy-bar {
+      font-size: 8px;
+      color: #0aff99;
+      margin-bottom: 8px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.5);
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 30px;
+    }
+    .result-text {
+      font-size: 42px;
+      font-weight: 900;
+      margin: 2px 0;
+      color: #fff;
+      text-shadow: 0 0 18px var(--primary);
+      letter-spacing: 2px;
+    }
+    #timer-box {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      border: 1px solid var(--secondary);
+      border-radius: 40px;
+      display: inline-block;
+      padding: 4px 18px;
+      background: #1f1b2e;
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+    .label {
+      font-size: 9px;
+      color: #aaa;
+      margin: 4px 0;
+      font-weight: 500;
+    }
+    .val {
+      color: var(--secondary);
+      font-weight: bold;
+      font-size: 12px;
+    }
+    #pStatus {
+      font-size: 11px;
+      font-weight: 900;
+      margin-top: 6px;
+      text-transform: uppercase;
+      background: #00000070;
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 30px;
+    }
+    .link-item {
+      display: block;
+      margin-top: 12px;
+      padding: 8px;
+      background: #1e88e5;
+      border-radius: 60px;
+      color: #fff !important;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: bold;
+      transition: 0.2s;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .link-item:active { background: #0b5e92; transform: scale(0.97); }
+    .home-btn {
+      margin-top: 12px;
+      color: #ffb347;
+      font-size: 10px;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-block;
+      padding: 5px;
+    }
+    .mode-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mode-buttons .btn-3d {
+      margin-bottom: 0;
+      flex: 1;
+    }
+    .back-sm {
+      background: #3a2c44;
+      box-shadow: 0 3px 0 #1e1727;
+    }
+    hr {
+      border-color: #2c2c44;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+<iframe id="main-frame" src="https://dkwin9.com/#/register?invitationCode=768242075211"></iframe>
+<div id="mini-icon" onclick="maximize()">⚡3X</div>
+<div id="rakib-bot">
+  <div class="header" id="drag-zone">
+    <span>🔥 3X SHAFIN AI 🔥</span>
+    <div class="min-btn" onclick="minimize()">−</div>
+  </div>
+  <div id="news-bar">
+    <marquee scrollamount="3">✅ অ্যাডমিন @smshafin11 থেকে UID কানেক্ট করিয়ে নিন | সঠিক প্রেডিক্ট পেতে পাসওয়ার্ড ব্যবহার করুন 💎</marquee>
+  </div>
+  <div class="container">
+    <!-- LOGIN PANEL -->
+    <div id="login-panel">
+      <input type="text" id="passInput" class="input-box" placeholder="ENTER PASSWORD">
+      <button class="btn-3d" onclick="login()">⚡ ACTIVATE V8 ⚡</button>
+      <a href="https://t.me/smshafin11" target="_blank" style="color: #bc13fe; font-size: 11px; text-decoration: none; display: block; margin-top: 6px; font-weight: bold; background: rgba(0,0,0,0.4); padding: 6px; border-radius: 60px;">
+        🔑 GET KEY : @smshafin11
+      </a>
+    </div>
+    
+    <!-- PREDICTION INTERFACE -->
+    <div id="prediction-screen" style="display:none;">
+      <div id="mode-ui">
+        <div class="mode-buttons">
+          <button class="btn-3d" onclick="startEng('30S')">⚡ WIN GO 30S</button>
+          <button class="btn-3d" onclick="startEng('1M')">⚡ WIN GO 1M</button>
+        </div>
+      </div>
+      <div id="live-ui" style="display:none;">
+        <div id="accuracy-bar">🔍 ANALYZING ENGINE • SYNC</div>
+        <div id="timer-box">00:00</div>
+        <div id="data-display">
+          <div class="label">📅 PERIOD: <span id="pID" class="val">----</span></div>
+          <div id="pRes" class="result-text">WAIT</div>
+        </div>
+        <div id="pStatus">⚡ READY</div>
+        <button class="btn-3d back-sm" style="font-size: 9px; padding: 6px; margin-top: 10px;" onclick="location.reload()">⟳ BACK TO MODES</button>
+      </div>
+      
+      <!-- UPDATED TELEGRAM CHANNEL LINK -->
+      <a href="https://t.me/gptchanal12" target="_blank" class="link-item">
+        📢 JOIN TELEGRAM CHANNEL 📢
+      </a>
+      <div class="home-btn" onclick="document.getElementById('main-frame').src='https://dkwin9.com'">🏠 HOME</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- NEW SECURE PASSWORD ----------
+  const SECRET = "smshafin2026";
+  let api = "", last = "", cur = "", steps = 0, gameMode = "";
+  let isStopped = false;
+  let intervalTimer = null, intervalFetch = null;
+  const bot = document.getElementById("rakib-bot");
+  const icon = document.getElementById("mini-icon");
+  
+  // ---------- DRAG HANDLERS ----------
+  function initDrag(target, handle) {
+    let ox = 0, oy = 0, isDown = false;
+    const start = (e) => {
+      e.preventDefault();
+      isDown = true;
+      let cx = e.touches ? e.touches[0].clientX : e.clientX;
+      let cy = e.touches ? e.touches[0].clientY : e.clientY;
+      ox = cx - target.offsetLeft;
+      oy = cy - target.offsetTop;
+    };
+    const move = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      let cx = e.touches ? e.touches[0].clientX : e.clientX;
+      let cy = e.touches ? e.touches[0].clientY : e.clientY;
+      let newLeft = cx - ox;
+      let newTop = cy - oy;
+      newLeft = Math.min(Math.max(newLeft, 5), window.innerWidth - target.offsetWidth - 5);
+      newTop = Math.min(Math.max(newTop, 25), window.innerHeight - target.offsetHeight - 30);
+      target.style.left = newLeft + "px";
+      target.style.top = newTop + "px";
+    };
+    const end = () => { isDown = false; };
+    handle.addEventListener('mousedown', start);
+    handle.addEventListener('touchstart', start, { passive: false });
+    window.addEventListener('mousemove', move);
+    window.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('mouseup', end);
+    window.addEventListener('touchend', end);
+  }
+  initDrag(bot, document.getElementById('drag-zone'));
+  initDrag(icon, icon);
+  
+  // minimize / maximize functions
+  function minimize() {
+    bot.style.transform = "scale(0)";
+    bot.style.opacity = "0";
+    setTimeout(() => {
+      bot.style.display = 'none';
+      icon.style.display = 'flex';
+      icon.style.left = bot.style.left;
+      icon.style.top = bot.style.top;
+      bot.style.transform = "scale(1)";
+      bot.style.opacity = "1";
+    }, 200);
+  }
+  function maximize() {
+    icon.style.display = 'none';
+    bot.style.display = 'block';
+    bot.style.left = icon.style.left;
+    bot.style.top = icon.style.top;
+  }
+  
+  // ---------- LOGIN VALIDATION ----------
+  window.login = function() {
+    const inputPass = document.getElementById('passInput').value;
+    if (inputPass === SECRET) {
+      document.getElementById('login-panel').style.display = 'none';
+      document.getElementById('prediction-screen').style.display = 'block';
+    } else {
+      alert("❌ ভুল পাসওয়ার্ড! শুধু authorised ইউজাররা এক্সেস পাবে। @smshafin11 থেকে কী নিন।");
+    }
+  };
+  
+  // ---------- PREDICTION ENGINE (HANIF STYLE + ANTI CHOP) ----------
+  async function fetchPredictionData() {
+    if (isStopped) {
+      document.getElementById('pRes').innerText = "⛔ PAUSE";
+      document.getElementById('accuracy-bar').innerHTML = "⚠️ SAFE MODE • WAIT 2 MIN";
+      return;
+    }
+    if (!api) return;
+    try {
+      const res = await fetch(api);
+      const data = await res.json();
+      const list = data.data.list;
+      if (!list || list.length === 0) return;
+      const latestGame = list[0];
+      const currentIssue = latestGame.issueNumber;
+      const currentNumber = parseInt(latestGame.number);
+      const currentResult = currentNumber >= 5 ? "BIG" : "SMALL";
+      
+      // history for pattern detection (last 25 results)
+      const history = list.slice(0, 25).map(item => parseInt(item.number) >= 5 ? "B" : "S");
+      
+      // NEW PERIOD DETECTED
+      if (last !== currentIssue) {
+        // if we have previous prediction (cur) compare with reality
+        if (last && cur) {
+          if (cur === currentResult) {
+            document.getElementById('pStatus').innerHTML = `<span style="color:#0aff6e">✅ WIN • PROFIT ✅</span>`;
+            steps = 0;
+          } else {
+            steps++;
+            document.getElementById('pStatus').innerHTML = `<span style="color:#ff884d">📉 STEP ${steps+1} • MARTINGALE</span>`;
+          }
+        }
+        
+        // SAFETY STOP if 3 consecutive losses
+        if (steps >= 3) {
+          isStopped = true;
+          document.getElementById('pRes').innerText = "⏸ HOLD";
+          document.getElementById('pStatus').innerHTML = `<span style="color:#ff4b2b">⛔ SAFE PAUSE (2 MIN)</span>`;
+          document.getElementById('accuracy-bar').innerHTML = "🔁 RECOVERY MODE ACTIVE";
+          setTimeout(() => {
+            isStopped = false;
+            steps = 0;
+            document.getElementById('pStatus').innerHTML = `<span style="color:#0aff6e">🟢 RESUMED • READY</span>`;
+            document.getElementById('accuracy-bar').innerHTML = "● ACTIVE • TRUST ENGINE";
+          }, 120000);
+          last = currentIssue;
+          return;
+        }
+        
+        // ----- HANIF ADVANCED PREDICTION LOGIC -----
+        let prediction = "";
+        const recentPattern = history.slice(0, 5);     // last 5 results pattern (B/S)
+        const lastThree = recentPattern.slice(0, 3).join('');
+        const lastTwo = recentPattern.slice(0, 2).join('');
+        
+        // DRAGON / FOLLOW STREAK
+        if (lastThree === "BBB") prediction = "BIG";
+        else if (lastThree === "SSS") prediction = "SMALL";
+        // ALTERNATOR / CHOP KILLER
+        else if (lastThree === "BSB" || lastThree === "SBS") {
+          prediction = (recentPattern[0] === "B") ? "SMALL" : "BIG";
+        }
+        // PATTERN 2-2+ REVERSAL
+        else if (lastTwo === "BB" && history[2] === "S") prediction = "SMALL";
+        else if (lastTwo === "SS" && history[2] === "B") prediction = "BIG";
+        else {
+          // default: weighted average from last 10 rounds
+          let bigCount = history.slice(0, 10).filter(x => x === "B").length;
+          if (bigCount >= 6) prediction = "SMALL";
+          else if (bigCount <= 3) prediction = "BIG";
+          else {
+            // extra dynamic: opposite of last result
+            prediction = (currentResult === "BIG") ? "SMALL" : "BIG";
+          }
+        }
+        
+        // if we are on step loss, override with opposite (classic martingale recovery)
+        if (steps > 0) {
+          prediction = (cur === "BIG") ? "SMALL" : "BIG";
+        }
+        
+        // final prediction for next period
+        cur = prediction;
+        last = currentIssue;
+        
+        // display upcoming period ID (next period number)
+        let nextPeriod = (BigInt(currentIssue) + 1n).toString();
+        let displayPeriod = nextPeriod.slice(-5);
+        document.getElementById('pID').innerText = displayPeriod;
+        document.getElementById('pRes').innerText = cur;
+        document.getElementById('accuracy-bar').innerHTML = "🟢 LIVE PREDICTION ACTIVE";
+      }
+    } catch (err) {
+      console.warn("fetch error", err);
+      document.getElementById('accuracy-bar').innerHTML = "⚠️ RECONNECTING...";
+    }
+  }
+  
+  // Timer Countdown with Visual urgency
+  function updateTimerUI() {
+    if (!gameMode) return;
+    let now = new Date();
+    let seconds = now.getSeconds();
+    let remaining = (gameMode === '30S') ? (30 - (seconds % 30)) : (60 - seconds);
+    if (remaining <= 0) remaining = (gameMode === '30S') ? 30 : 60;
+    let timerText = (remaining < 10) ? "00:0" + remaining : "00:" + remaining;
+    document.getElementById('timer-box').innerText = timerText;
+    if (remaining <= 5) {
+      document.getElementById('timer-box').style.color = "#ff3a3a";
+      document.getElementById('timer-box').style.borderColor = "#ff3a3a";
+      document.getElementById('timer-box').style.textShadow = "0 0 4px red";
+    } else {
+      document.getElementById('timer-box').style.color = "var(--secondary)";
+      document.getElementById('timer-box').style.borderColor = "var(--secondary)";
+      document.getElementById('timer-box').style.textShadow = "none";
+    }
+  }
+  
+  // start engine for selected mode
+  window.startEng = function(mode) {
+    if (intervalFetch) clearInterval(intervalFetch);
+    if (intervalTimer) clearInterval(intervalTimer);
+    gameMode = mode;
+    steps = 0;
+    isStopped = false;
+    last = "";
+    cur = "";
+    
+    api = (mode === '30S') 
+      ? 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?pageSize=30'
+      : 'https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?pageSize=30';
+    
+    document.getElementById('mode-ui').style.display = 'none';
+    document.getElementById('live-ui').style.display = 'block';
+    document.getElementById('pStatus').innerHTML = "⚡ ENGAGING AI MODEL";
+    document.getElementById('accuracy-bar').innerHTML = "● CALIBRATING FRESH DATA";
+    document.getElementById('pRes').innerText = "🔮";
+    
+    // initial fetch
+    setTimeout(() => {
+      fetchPredictionData();
+    }, 200);
+    intervalFetch = setInterval(fetchPredictionData, 2100);
+    intervalTimer = setInterval(updateTimerUI, 200);
+    updateTimerUI();
+  };
+  
+  // cleanup intervals if needed (on back)
+  window.cleanIntervals = function() {
+    if (intervalFetch) clearInterval(intervalFetch);
+    if (intervalTimer) clearInterval(intervalTimer);
+  };
+  
+  // override location reload to clear intervals
+  const originalReload = location.reload.bind(location);
+  location.reload = function() {
+    if (intervalFetch) clearInterval(intervalFetch);
+    if (intervalTimer) clearInterval(intervalTimer);
+    originalReload();
+  };
+  
+  // expose globally for back button safety
+  window.addEventListener("beforeunload", () => {
+    if (intervalFetch) clearInterval(intervalFetch);
+    if (intervalTimer) clearInterval(intervalTimer);
+  });
+  
+  // extra style for dynamic channel & user reference
+  console.log("3X SHAFIN AI • updated by request | pass: smshafin2026 | tg: @smshafin11");
+</script>
+</body>
+</html>
